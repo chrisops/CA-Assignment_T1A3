@@ -105,3 +105,10 @@ The user will be asked for a Name, email and phone number to add a new customer'
 > Your checklists for each feature should have at least 5 items.
 
 Link to my [trello](https://trello.com/b/4dqxtBYP/bashbooks-ruby-app)
+
+
+> ## R10	Design help documentation which includes a set of instructions which accurately describe how to use and install the application.
+> You must include:
+> - steps to install the application
+> - any dependencies required by the application to operate
+> - any system/hardware requirements
