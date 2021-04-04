@@ -1,3 +1,5 @@
+require 'json'
+require 'tty-prompt'
 require_relative 'modules/login'
 require_relative 'modules/mainmenu'
 
@@ -30,6 +32,8 @@ if !user
 end
 
 file = File.read('clients.json')
-client_hash = JSON.parse(file)
+client_hash = JSON.parse(file, symbolize_names: true)
 
-main_menu()
+companyname = get_company_name()
+
+main_menu(companyname,user,client_hash)
