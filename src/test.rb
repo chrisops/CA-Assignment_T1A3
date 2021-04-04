@@ -1,13 +1,15 @@
-arrhat = [{
-    id: 1,
-    name: "boi",
-    email: "boi@boi.com",
-    phone: "012223333"
-},{
-    id: 2,
-    name: "gregorino",
-    email: "greg@grego",
-    phone: nil
-}]
+require 'json'
 
-puts arrhat[1][:id]
+file = File.read('clients.json')
+
+client_hash = JSON.parse(file)
+
+hasherino = {
+    thing: "stuff",
+    cool: "thing",
+    shoes: 2
+}
+
+File.write("testthing.json", JSON.dump(hasherino))
+
+puts JSON.parse(File.read('testthing.json'), symbolize_names: true)

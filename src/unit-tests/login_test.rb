@@ -1,5 +1,5 @@
 require 'test/unit'
-require_relative '../login'
+require_relative '../modules/login'
 
 class LoginTest < Test::Unit::TestCase
     def assertnoargs

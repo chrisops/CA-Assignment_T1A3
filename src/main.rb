@@ -1,4 +1,5 @@
-require_relative 'login'
+require_relative 'modules/login'
+require_relative 'modules/mainmenu'
 
 
 # main script
@@ -22,7 +23,13 @@ require_relative 'login'
 
 login_user_credentials = [{username: "admin", password: "admin"},{username: "guest", password: "guest"}]
 
-if !login_prompt(login_user_credentials)
-    exit
+user = login_prompt(login_user_credentials)
+
+if !user
+    exit 0
 end
 
+file = File.read('clients.json')
+client_hash = JSON.parse(file)
+
+main_menu()
