@@ -1,7 +1,7 @@
 require 'json'
 require 'tty-prompt'
-require_relative 'modules/login'
-require_relative 'modules/mainmenu'
+require_relative 'methods/login'
+require_relative 'methods/mainmenu'
 
 
 # main script
@@ -22,18 +22,19 @@ require_relative 'modules/mainmenu'
 #      |          |
 #     edit    add charge
 
+user = true
 
-login_user_credentials = [{username: "admin", password: "admin"},{username: "guest", password: "guest"}]
+while user
+    user = login_prompt(getlogins())
 
-user = login_prompt(login_user_credentials)
+    if !user
+        exit 0
+    end
 
-if !user
-    exit 0
+    client_hash = get_clienthash()
+
+    companyname = get_company_name()
+
+    main_menu(companyname,user,client_hash)
 end
 
-file = File.read('clients.json')
-client_hash = JSON.parse(file, symbolize_names: true)
-
-companyname = get_company_name()
-
-main_menu(companyname,user,client_hash)

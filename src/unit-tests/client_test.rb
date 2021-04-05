@@ -8,7 +8,11 @@ class LoginTest < Test::Unit::TestCase
         }
     end
     def assertprofilehash
-        client = Client.new
+        client = Client.new(3,"Hank","01234567","hank@propane.com")
         assert_instance_of(Hash,client.profile)
+    end
+    def clientsuccess
+        client = Client.new()
+        assert_instance_of(Client,client)
     end
 end

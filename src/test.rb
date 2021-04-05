@@ -1,12 +1,22 @@
 require 'json'
 
+hash = {clients:[{
+    id: 1
+},{
+    id: 2
+},{
+    id: 3
+}]}
 
-if File.exist?('settings.cfg')
-    strVar = File.open('settings.cfg', &:readline)
-    puts strVar
-else
-    File.write('settings.cfg','coolguy co')
-end
+puts hash[client]
+
+
+# if File.exist?('settings.cfg')
+#     strVar = File.open('settings.cfg', &:readline)
+#     puts strVar
+# else
+#     File.write('settings.cfg','coolguy co')
+# end
 
 
 
