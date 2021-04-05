@@ -30,7 +30,7 @@ The user can then generate an invoice which will remove the pending charges and 
 
 Contractors and freelance developers need to charge for their work and keep a database of client contact information so they can contact their clients for marketing and to get paid. Traditionally this could be done in a messy pile of invoice word documents and excel spreadsheets but BashBooks aims to simplify this work all in one place, so the freelancer can focus their effort on more important work.
 
-The target audience would be a freelance developer or contractor that charges by the hour. They can use BashBooks through the terminal by selecting the option to **search** for an invoice or client, or they can select the option to add a new client in the menu. They can **add** new clients by entering their details and then **add** pending charges to keep track of the work they've done for their client and then easily invoice for their work by selecting the **send invoice** option in the menu when they need to settle the account. The contractor can also export the .csv file if they need to transfer to another version of the same app.
+The target audience would be a freelance developer or contractor that charges by the hour. They can use BashBooks through the terminal by selecting the option to **search** for an invoice or client, or they can select the option to add a new client in the menu. They can **add** new clients by entering their details and then **add** pending charges to keep track of the work they've done for their client and then easily invoice for their work by selecting the **send invoice** option in the menu when they need to settle the account. The contractor can also export the .csv file so they can open it a spreadsheet app if they need
 
 > ## R6 Develop a list of features that will be  included in the application. It must include:
 > - at least THREE features
@@ -47,13 +47,23 @@ The target audience would be a freelance developer or contractor that charges by
 
 ## BashBooks features:
 
-- Upon launching the app, the user will be presented with a login prompt, and using a `while` loop my app will ask the user for a username and password until they provide a correct combination. The MVP will have an `admin` login and also a `guest` login that will have read-only permission. I will use error handling to make sure the input is alphanumeric.
+---
 
-- A main menu that uses a `while` loop to continue to ask the user for input until the user inputs the option for quitting the application. The main menu will use the `tty-prompt` Ruby gem to present the options **search client**, **add client**, and **quit**. I will use *conditional control* `if else` to change the menu according to the option the user chooses. I will use error handling to make sure the prompt doesn't return an invalid result somehow.
+## Login  
 
-- Upon selecting the **search client**, I will use a `method` to go into a new `while` loop to `gets` ask the user for a text input, then it will use a `for each` loop to open the clients .csv file and push the results that match the text input from the user into a `hash` variable, then print the hash to the screen and **select** that client. If there is more than one match, the terminal will print "More than one client matching [text input]" and will ask the user for a text input again. The user can type "exit" to go back to the main menu. I will use error-handling to make sure the text input is alphanumeric.
+Upon launching the app, the user will be presented with a login prompt, and using a `while` loop my app will ask the user for a username and password until they provide a correct combination. The MVP will have an `admin` login and also a `guest` login that will have read-only permission. I will use error handling to make sure the input is alphanumeric.
 
-- When a search returns a single client result, they will be **selected**, and the menu will use a `tty-prompt` to ask the user if they want to **edit client**, **add pending charge**, **send invoice**, or **exit**. If the user selects **edit client** they will then be able to change the details for the stored client. **Add pending charge** will add a pending charge and the user can input the details for the charge. **Send invoice will copy the pending charges into an email to be sent to the customer's email, using the Net::SMTP Ruby class. Then it will remove all pending charges from the client's account.
+## Main Menu
+
+A main menu that uses a `while` loop to continue to ask the user for input until the user inputs the option for quitting the application. The main menu will use the `tty-prompt` Ruby gem to present the options **search client**, **add client**, and **quit**. I will use *conditional control* `if else` to change the menu according to the option the user chooses. I will use error handling to make sure the prompt doesn't return an invalid result somehow.
+
+## Search client
+
+Upon selecting the **search client**, I will use a `method` to go into a new `while` loop to `gets` ask the user for a text input, then it will use a `for each` loop to open the clients .csv file and push the results that match the text input from the user into a `hash` variable, then print the hash to the screen and **select** that client. If there is more than one match, the terminal will print "More than one client matching [text input]" and will ask the user for a text input again. The user can type "exit" to go back to the main menu. I will use error-handling to make sure the text input is alphanumeric.
+
+## Selected client
+
+When a search returns a single client result, they will be **selected**, and the menu will use a `tty-prompt` to ask the user if they want to **edit client**, **add pending charge**, **send invoice**, or **exit**. If the user selects **edit client** they will then be able to change the details for the stored client. **Add pending charge** will add a pending charge and the user can input the details for the charge. **Send invoice will copy the pending charges into an email to be sent to the customer's email, using the Net::SMTP Ruby class. Then it will remove all pending charges from the client's account.
 
 > ## R7 Develop an outline of the user interaction and experience for the application.
 > Your outline must include:
