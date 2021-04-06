@@ -29,6 +29,7 @@ def add_new_client(client_hash)
     prompt = TTY::Prompt.new
     totalclients = client_hash[:clients].length
     system('clear')
+    Debug.show("Debug ON")
     puts "Create new client: \n\n\n"
     name = prompt.ask("Name:") do |q|
         q.validate(/^[\w ]+$/)
@@ -56,7 +57,9 @@ def clientsearch(client_hash)
     input = ""
     while input != "Exit"
         system('clear')
+        Debug.show("Debug ON")
         input = prompt.select("Client lookup\n\n\n",["Fulltext search","ID search","Exit"])
+        string = nil
         if input == "Fulltext search"
             string = prompt.ask("Fulltext search:") do |q|
                 q.validate(/^[\w \d]+$/)
@@ -68,41 +71,44 @@ def clientsearch(client_hash)
                 q.messages[:valid?] = "Invalid ID, must be numeric"
             end
         end
-        system('clear')
-        puts "Client lookup\n\nSearch: #{string}\n"
-        string.downcase!
-        matches = []
-        client_hash[:clients].each do |client|
-            if input == "ID search"
-                if /#{string}/.match(client[:id].to_s)
-                    matches.push(client[:id])
+        if string != nil
+            system('clear')
+            puts "Client lookup\n\nSearch: #{string}\n"
+            string.downcase!
+            matches = []
+            client_hash[:clients].each do |client|
+                if input == "ID search"
+                    if /#{string}/.match(client[:id].to_s)
+                        matches.push(client[:id])
+                    end
+                    next
                 end
-                next
-            end
-            client.each do |key,value|
-                next if key == :pendingcharges
-                if /#{string}/.match(value.to_s.downcase)
-                    
-                    Debug.show "#{string} matches #{key} => #{value.to_s.downcase}\n#{client[:id]}"
-                    matches.push(client[:id])
+                client.each do |key,value|
+                    next if key == :pendingcharges
+                    if /#{string}/.match(value.to_s.downcase)
+                        
+                        Debug.show "#{string} matches #{key} => #{value.to_s.downcase}\t#{client[:id]}"
+                        matches.push(client[:id])
+                        break
+                    end
                 end
             end
-        end
-        if matches.length > 1 && matches.length < 7
-            puts "Multiple results:\n\n"
-            matches.foreach do |id|
-                puts "ID: #{client_hash[:clients][id-1][:id]} \nName: #{client_hash[:clients][id-1][:name]}\n"
+            if matches.length > 1 && matches.length < 7
+                puts "Multiple results:\n\n"
+                matches.each do |id|
+                    puts "Client ID: #{client_hash[:clients][id-1][:id]} \t#{client_hash[:clients][id-1][:name]}\n"
+                end
+                input = prompt.select("\n\n",["Search again","Exit"])
+            elsif matches.length >= 7
+                puts "Too many results"
+                input = prompt.select("\n\n",["Search again","Exit"])
+            elsif matches.length == 0
+                puts "No results"
+                input = prompt.select("\n\n",["Search again","Exit"])
+            elsif matches.length == 1
+                puts "ID: #{client_hash[:clients][matches[0]-1][:id]} \nName: #{client_hash[:clients][matches[0]-1][:name]}"
+                selectclient(client_hash[:clients][matches[0]-1])
             end
-            input = prompt.select("\n\n",["Search again","Exit"])
-        elsif matches.length >= 7
-            puts "Too many results"
-            input = prompt.select("\n\n",["Search again","Exit"])
-        elsif matches.length == 0
-            puts "No results"
-            input = prompt.select("\n\n",["Search again","Exit"])
-        elsif matches.length == 1
-            puts "ID: #{client_hash[:clients][matches[0]-1][:id]} \nName: #{client_hash[:clients][matches[0]-1][:name]}"
-            selectclient(client_hash[:clients][matches[0]-1])
         end
     end
 end
@@ -114,7 +120,7 @@ def selectclient(client)
     while input != "Exit"
         system('clear')
         selected.profile_print
-        input = prompt.select("",["Edit","Add pending charge","Send Invoice","Exit"])
+        input = prompt.select("\n",["Edit","Add pending charge","Send Invoice","Exit"])
         case input
         when "Edit"
             selected.edit_client

@@ -3,6 +3,9 @@ GEM
   specs:
     colorize (0.8.1)
     json (2.5.1)
+    mail (2.7.1)
+      mini_mime (>= 0.1.1)
+    mini_mime (1.1.0)
     pastel (0.8.0)
       tty-color (~> 0.5)
     tty-color (0.6.0)
@@ -23,6 +26,7 @@ PLATFORMS
 DEPENDENCIES
   colorize (~> 0.8.1)
   json (~> 2.5)
+  mail (~> 2.7)
   tty-prompt (~> 0.23.0)
 
 BUNDLED WITH

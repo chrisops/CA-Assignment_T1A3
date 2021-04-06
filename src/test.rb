@@ -1,9 +1,22 @@
-require_relative 'modules/data'
+require 'mail'
 
-puts Debug::On
-
-
-
+mail = Mail.new do
+    from    'billing@makecoolstuff.net'
+    to      'chris@makecoolstuff.net'
+    subject 'Invoice'
+    body    'test'
+end
+options = { 
+    :address              => "smtp.gmail.com",
+    :port                 => 587,
+    :domain               => 'makecoolstuff.net',
+    :user_name            => 'homebase.op@gmail.com',
+    :password             => 'jlqolwsxiuhryjyd',
+    :enable_starttls_auto => true  }
+Mail.defaults do
+    delivery_method :smtp, options
+end
+mail.deliver
 
 # if File.exist?('settings.cfg')
 #     strVar = File.open('settings.cfg', &:readline)

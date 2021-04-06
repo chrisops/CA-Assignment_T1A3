@@ -2,6 +2,7 @@ require 'json'
 require 'tty-prompt'
 require_relative 'methods/login'
 require_relative 'methods/mainmenu'
+require_relative 'methods/files'
 
 
 # main script
