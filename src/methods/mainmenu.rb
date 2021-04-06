@@ -43,7 +43,7 @@ def add_new_client(client_hash)
         q.messages[:valid?] = "Invalid Email address format (must be something@domain.tld)"
     end
     client = Client.new(totalclients+1,name,phone,email)
-    return client.save(client_hash)
+    return client.save()
 end
 
 
@@ -107,17 +107,21 @@ def clientsearch(client_hash)
     end
 end
 
-def selectclient(client_hash)
+def selectclient(client)
+    prompt = TTY::Prompt.new
     input = ""
+    selected = Client.new(client[:id],client[:name],client[:phone],client[:email],client[:pendingcharges])
     while input != "Exit"
         system('clear')
-        client = Client.new(client_hash[:id],client_hash[:name],client_hash[:phone],client_hash[:email],client_hash[:pendingcharges])
-        client.profile_print
+        selected.profile_print
         input = prompt.select("",["Edit","Add pending charge","Send Invoice","Exit"])
         case input
         when "Edit"
+            selected.edit_client
         when "Add pending charge"
+            selected.add_charge
         when "Send Invoice"
+            selected.send_invoice
         end
     end
 end
