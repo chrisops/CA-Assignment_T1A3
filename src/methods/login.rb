@@ -22,6 +22,7 @@ def login_prompt(loginaccounts)
     input = ""
     while input != "Exit"
         system("clear")
+        Debug.show("Debug ON")
         input = prompt.select("BashBooks login\n\n#{failedmsg}\n\n", %w(Login Exit))
         if input == "Login"
             input_un = prompt.ask("Enter username:", default: "admin")

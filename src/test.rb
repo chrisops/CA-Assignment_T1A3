@@ -1,14 +1,8 @@
-require 'json'
+require_relative 'modules/data'
 
-hash = {clients:[{
-    id: 1
-},{
-    id: 2
-},{
-    id: 3
-}]}
+puts Debug::On
 
-puts hash[client]
+
 
 
 # if File.exist?('settings.cfg')

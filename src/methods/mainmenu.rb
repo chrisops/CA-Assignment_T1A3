@@ -1,5 +1,8 @@
 require 'tty-prompt'
+require 'colorize'
 require_relative '../classes/client'
+require_relative '../modules/debug'
+require_relative 'files'
 
 # mainmenu(companyname,user,client_hash) Returns option selected by user
 def main_menu(companyname="Unknown",username="Unknown",client_hash)
@@ -7,6 +10,7 @@ def main_menu(companyname="Unknown",username="Unknown",client_hash)
     input = ""
     while input != "Exit"
         system('clear')
+        Debug.show "Debug ON\ninput: #{input} | company_name: #{companyname} | username: #{username}"
         input = prompt.select("#{companyname} accounts\n\nLogged in as user #{username}\n\nTotal clients: #{client_hash[:clients].length}\n\n", ["Add new client","Search client","Exit"])
         
         if input == "Add new client"
@@ -14,6 +18,7 @@ def main_menu(companyname="Unknown",username="Unknown",client_hash)
         end
 
         if input == "Search client"
+            clientsearch(client_hash)
         end
     end
     return input
@@ -41,63 +46,78 @@ def add_new_client(client_hash)
     return client.save(client_hash)
 end
 
-# returns company name, asks for new one if can't find
-def get_company_name
-    prompt = TTY::Prompt.new
-    if File.exist?('settings.cfg')
-        begin
-            companyname = File.open('settings.cfg', &:readline)
-        rescue 
-            puts "Error reading settings.cfg, re-creating..."
-            File.delete('settings.cfg')
-            companyname = prompt.ask("Enter company name:") do |q| 
-                q.validate(/^[\w\d ]+$/)
-                q.messages[:valid?] = "Invalid Company name, must be alphanumeric"
-            end
-            File.write('settings.cfg',companyname)
-        end
-    else
-        companyname = prompt.ask("Enter company name:") do |q| 
-            q.validate(/^[\w\d ]+$/)
-            q.messages[:valid?] = "Invalid Company name, must be alphanumeric"
-        end
-        File.write('settings.cfg',companyname)
-    end
-    return companyname
-end
 
 
-# returns hash list of clients parsed from clients.json
-def get_clienthash()
-    if File.exist?('settings.cfg')
-        begin
-            file = File.read('clients.json')
-            client_hash = JSON.parse(file, symbolize_names: true)
-        rescue 
-            system('clear')
-            puts "Error reading clients.json: \nfile is corrupt or not in correct format\nre-creating..."
-            puts "mv clients.json clients.json.bak"
-            system('mv clients.json clients.json.bak')
-            system('echo "{\"clients\":[]}" > clients.json')
-            puts "\nOld clients list is saved to clients.json.bak\nPress Enter to continue..."
-            gets
-            client_hash = {clients: []}
-        end
-    else
-        system('echo "{\"clients\":[]}" > clients.json')
-        client_hash = {clients: []}
-    end
-    return client_hash
-end
 
 
 # searches the client hash to match a string input from the user, then goes to clientselect menu
 def clientsearch(client_hash)
     prompt = TTY::Prompt.new
-    system('clear')
-    puts "Client lookup\n\n\n"
-    string = prompt.ask("Fulltext search:") do |q|
-        q.validate(/^[\w \d]+$/)
-        q.messages[:valid?] = "Invalid search, must be alphanumeric"
+    input = ""
+    while input != "Exit"
+        system('clear')
+        input = prompt.select("Client lookup\n\n\n",["Fulltext search","ID search","Exit"])
+        if input == "Fulltext search"
+            string = prompt.ask("Fulltext search:") do |q|
+                q.validate(/^[\w \d]+$/)
+                q.messages[:valid?] = "Invalid search, must be alphanumeric"
+            end
+        elsif input == "ID search"
+            string = prompt.ask("ID search:") do |q|
+                q.validate(/^[\d]+$/)
+                q.messages[:valid?] = "Invalid ID, must be numeric"
+            end
+        end
+        system('clear')
+        puts "Client lookup\n\nSearch: #{string}\n"
+        string.downcase!
+        matches = []
+        client_hash[:clients].each do |client|
+            if input == "ID search"
+                if /#{string}/.match(client[:id].to_s)
+                    matches.push(client[:id])
+                end
+                next
+            end
+            client.each do |key,value|
+                next if key == :pendingcharges
+                if /#{string}/.match(value.to_s.downcase)
+                    
+                    Debug.show "#{string} matches #{key} => #{value.to_s.downcase}\n#{client[:id]}"
+                    matches.push(client[:id])
+                end
+            end
+        end
+        if matches.length > 1 && matches.length < 7
+            puts "Multiple results:\n\n"
+            matches.foreach do |id|
+                puts "ID: #{client_hash[:clients][id-1][:id]} \nName: #{client_hash[:clients][id-1][:name]}\n"
+            end
+            input = prompt.select("\n\n",["Search again","Exit"])
+        elsif matches.length >= 7
+            puts "Too many results"
+            input = prompt.select("\n\n",["Search again","Exit"])
+        elsif matches.length == 0
+            puts "No results"
+            input = prompt.select("\n\n",["Search again","Exit"])
+        elsif matches.length == 1
+            puts "ID: #{client_hash[:clients][matches[0]-1][:id]} \nName: #{client_hash[:clients][matches[0]-1][:name]}"
+            selectclient(client_hash[:clients][matches[0]-1])
+        end
+    end
+end
+
+def selectclient(client_hash)
+    input = ""
+    while input != "Exit"
+        system('clear')
+        client = Client.new(client_hash[:id],client_hash[:name],client_hash[:phone],client_hash[:email],client_hash[:pendingcharges])
+        client.profile_print
+        input = prompt.select("",["Edit","Add pending charge","Send Invoice","Exit"])
+        case input
+        when "Edit"
+        when "Add pending charge"
+        when "Send Invoice"
+        end
     end
 end

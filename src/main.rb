@@ -22,6 +22,7 @@ require_relative 'methods/mainmenu'
 #      |          |
 #     edit    add charge
 
+
 user = true
 
 while user
