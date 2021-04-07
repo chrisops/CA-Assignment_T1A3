@@ -115,8 +115,8 @@ class Client
             chargelist.gsub!(/\n/,"<br />")
             begin
                 Mailjet.configure do |config|
-                    config.api_key = 'e557cd3a5ef5b8db8f983dcc3e95c495'
-                    config.secret_key = '1d114ee466c706babd2830d4fe6c8aec'
+                    # config.api_key = ''
+                    # config.secret_key = ''
                     config.api_version = "v3.1"
                 end
                 variable = Mailjet::Send.create(messages: [{
