@@ -116,18 +116,22 @@ end
 def selectclient(client)
     prompt = TTY::Prompt.new
     input = ""
+    msg = ""
     selected = Client.new(client[:id],client[:name],client[:phone],client[:email],client[:pendingcharges])
     while input != "Exit"
         system('clear')
         selected.profile_print
-        input = prompt.select("\n",["Edit","Add pending charge","Send Invoice","Exit"])
+        input = prompt.select("#{msg}\n",["Edit","Add pending charge","Send Invoice","Exit"])
+        msg = ""
         case input
         when "Edit"
             selected.edit_client
         when "Add pending charge"
             selected.add_charge
         when "Send Invoice"
-            selected.send_invoice
+            if selected.send_invoice
+                msg = "\nSuccessfully sent invoice to #{client[:email]}\n\n".colorize(:green)
+            end
         end
     end
 end

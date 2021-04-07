@@ -1,42 +1,6 @@
-require 'mail'
-
-mail = Mail.new do
-    from    'billing@makecoolstuff.net'
-    to      'chris@makecoolstuff.net'
-    subject 'Invoice'
-    body    'test'
-end
-options = { 
-    :address              => "smtp.gmail.com",
-    :port                 => 587,
-    :domain               => 'makecoolstuff.net',
-    :user_name            => 'homebase.op@gmail.com',
-    :password             => 'jlqolwsxiuhryjyd',
-    :enable_starttls_auto => true  }
-Mail.defaults do
-    delivery_method :smtp, options
-end
-mail.deliver
-
-# if File.exist?('settings.cfg')
-#     strVar = File.open('settings.cfg', &:readline)
-#     puts strVar
-# else
-#     File.write('settings.cfg','coolguy co')
-# end
-
-
-
-# file = File.read('clients.json')
-
-# client_hash = JSON.parse(file)
-
-# hasherino = {
-#     thing: "stuff",
-#     cool: "thing",
-#     shoes: 2
-# }
-
-# File.write("testthing.json", JSON.dump(hasherino))
-
-# puts JSON.parse(File.read('testthing.json'), symbolize_names: true)
+/home/chris/.rbenv/versions/2.7.2/lib/ruby/2.7.0/net/protocol.rb:66: warning: already initialized constant Net::ProtocRetryError
+/home/chris/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/net-protocol-0.1.0/lib/net/protocol.rb:66: warning: previous definition of ProtocRetryError was here
+/home/chris/.rbenv/versions/2.7.2/lib/ruby/2.7.0/net/protocol.rb:206: warning: already initialized constant Net::BufferedIO::BUFSIZE
+/home/chris/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/net-protocol-0.1.0/lib/net/protocol.rb:206: warning: previous definition of BUFSIZE was here
+/home/chris/.rbenv/versions/2.7.2/lib/ruby/2.7.0/net/protocol.rb:503: warning: already initialized constant Net::NetPrivate::Socket
+/home/chris/.rbenv/versions/2.7.2/lib/ruby/gems/2.7.0/gems/net-protocol-0.1.0/lib/net/protocol.rb:503: warning: previous definition of Socket was here

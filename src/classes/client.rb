@@ -1,5 +1,6 @@
 require 'tty-prompt'
 require 'mail'
+require 'mailjet'
 require_relative '../methods/files'
 
 # Client object stores a hash of values that represent a client, and can be read from @profile
@@ -34,11 +35,16 @@ class Client
 
     def profile_print
         puts "Client ID: \t#{@id}\nName: \t\t#{@name}\nPhone Number: \t#{@phone}\nEmail Address: \t#{@email}"
-        puts "\nPending charges:"
+        
+        charges = ""
+        bigtotal = 0
         @pendingcharges.each do |charge|
             total = charge[:flatfee] + (charge[:hours] * charge[:chargeperhour])
-            puts "\t#{charge[:description]} - \t$#{total} \n\t   $#{charge[:flatfee]} fee + #{charge[:hours].to_s} hours at $#{charge[:chargeperhour].to_s} per hour."
+            bigtotal += total
+            charges.concat("   #{charge[:description]} - \t\t$#{total} \n\t$#{charge[:flatfee]} fee + #{charge[:hours].to_s} hours at $#{charge[:chargeperhour].to_s} per hour.\n\n")
         end
+        puts "\nPending charges:\t\t\t$#{bigtotal}"
+        puts charges
     end
 
     def add_charge()
@@ -90,39 +96,56 @@ class Client
 
     def send_invoice()
         prompt = TTY::Prompt.new
-        pending = profile()
+        system('clear')
         puts "Invoice for #{@name}"
         puts "\nCharges on invoice:"
-        pending[:pendingcharges].each do |charge|
+        chargelist = ""
+        i = 0
+        maintotal = 0
+        Debug.show(@pendingcharges)
+        @pendingcharges.each do |charge|
+            i += 1
             total = charge[:flatfee] + (charge[:hours] * charge[:chargeperhour])
-            puts "\t#{charge[:description]} - \t$#{total} \n\t   $#{charge[:flatfee]} fee + #{charge[:hours].to_s} hours at $#{charge[:chargeperhour].to_s} per hour."
+            maintotal += total
+            chargelist.concat("\t#{charge[:description]} - \t$#{total} \n\t   $#{charge[:flatfee]} fee + #{charge[:hours].to_s} hours at $#{charge[:chargeperhour].to_s} per hour.\n\n")
         end
+        puts chargelist
         if prompt.select("\nSend Invoice to #{@email}?", ["Yes","No"]) == "Yes"
             companyname = get_company_name()
-            compose_body = "#{companyname} Tax Invoice/Statement\n\n"
+            chargelist.gsub!(/\n/,"<br />")
             begin
-                mail = Mail.new do
-                    from    'billing@makecoolstuff.net'
-                    to      @email
-                    subject "#{companyname} - Invoice"
-                    body    compose_body
+                Mailjet.configure do |config|
+                    config.api_key = 'e557cd3a5ef5b8db8f983dcc3e95c495'
+                    config.secret_key = '1d114ee466c706babd2830d4fe6c8aec'
+                    config.api_version = "v3.1"
                 end
-                options = { 
-                    :address              => "smtp.gmail.com",
-                    :port                 => 587,
-                    :domain               => 'makecoolstuff.net',
-                    :user_name            => 'homebase.op@gmail.com',
-                    :password             => 'jlqolwsxiuhryjyd',
-                    :authentication       => 'plain',
-                    :enable_starttls_auto => true  }
-                Mail.defaults do
-                    delivery_method :smtp, options
-                end
-                mail.deliver
+                variable = Mailjet::Send.create(messages: [{
+                  'From'=> {
+                    'Email'=> 'billing@makecoolstuff.net',
+                    'Name'=> "#{companyname} Accounts Receivable"
+                  },
+                  'To'=> [
+                    {
+                      'Email'=> @email,
+                      'Name'=> @name
+                    }
+                  ],
+                  'Subject'=> "#{companyname} - Invoice",
+                  'TextPart'=> 'Company Invoice',
+                  'HTMLPart'=> "<h1>#{companyname}</h1><h2>Account ID: #{@id}</h2><h3>Dear #{@name},</h3<br /><h4>Please find below invoice:</h4><br /><h5 style='font-size:22px'><b>#{chargelist}</b></h5><br />Total due: <span style='font-weight:bold,margin-left:60px'>$#{maintotal}<br /><p style='color: darkgrey'>Invoice due within 14 days</p> ",
+                  'CustomID' => 'InvoiceEmailBashBooksRubyApp'
+                }]
+                )
             rescue => error
                 puts "Failed to deliver email:"
                 puts error.message
+                puts "\nPress enter to continue"
+                input = gets
+                return false
             end
+            @pendingcharges = []
+            save()
+            return true
         end
     end
 end
