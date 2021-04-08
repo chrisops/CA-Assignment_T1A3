@@ -11,6 +11,7 @@ GEM
     concurrent-ruby (1.1.8)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
+    dotenv (2.7.6)
     http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
@@ -57,6 +58,7 @@ PLATFORMS
 
 DEPENDENCIES
   colorize (~> 0.8.1)
+  dotenv (~> 2.7)
   json (~> 2.5)
   mailjet (~> 1.6)
   tty-prompt (~> 0.23.0)

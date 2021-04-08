@@ -1,6 +1,7 @@
 require 'tty-prompt'
 require 'mail'
 require 'mailjet'
+require 'dotenv/load'
 require_relative '../methods/files'
 
 # Client object stores a hash of values that represent a client, and can be read from @profile
@@ -33,6 +34,7 @@ class Client
         }
     end
 
+    # prints client profile info in a nice format
     def profile_print
         puts "Client ID: \t#{@id}\nName: \t\t#{@name}\nPhone Number: \t#{@phone}\nEmail Address: \t#{@email}"
         
@@ -47,6 +49,7 @@ class Client
         puts charges
     end
 
+    # adds new pending charge to client profile
     def add_charge()
         prompt = TTY::Prompt.new
         system('clear')
@@ -75,6 +78,7 @@ class Client
         save()
     end
 
+    # prompts user for input and saves new client info
     def edit_client
         prompt = TTY::Prompt.new
         system('clear')
@@ -94,6 +98,7 @@ class Client
         save()
     end
 
+    # sends new invoice with pending charges added to it
     def send_invoice()
         prompt = TTY::Prompt.new
         system('clear')
@@ -115,8 +120,8 @@ class Client
             chargelist.gsub!(/\n/,"<br />")
             begin
                 Mailjet.configure do |config|
-                    # config.api_key = ''
-                    # config.secret_key = ''
+                    config.api_key = ENV['APIKEY']
+                    config.secret_key = ENV['APISECRET']
                     config.api_version = "v3.1"
                 end
                 variable = Mailjet::Send.create(messages: [{
