@@ -15,4 +15,8 @@ class LoginTest < Test::Unit::TestCase
         client = Client.new()
         assert_instance_of(Client,client)
     end
+    def client_can_save
+        client = Client.new(3,"Hank","01234567","hank@propane.com")
+        assert_instance_of(Hash,client.save())
+    end
 end

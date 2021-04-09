@@ -11,7 +11,9 @@ def main_menu(companyname="Unknown",username="Unknown",client_hash)
     while input != "Exit"
         system('clear')
         Debug.show "Debug ON\ninput: #{input} | company_name: #{companyname} | username: #{username}"
-        input = prompt.select("#{companyname} accounts\n\nLogged in as user #{username}\n\nTotal clients: #{client_hash[:clients].length}\n\n", ["Add new client","Search client","Exit"])
+        menuoptions = ["Add new client","Search client","Exit"]
+        menuoptions.delete("Add new client") if username = "guest"
+        input = prompt.select("#{companyname} accounts\n\nLogged in as user #{username}\n\nTotal clients: #{client_hash[:clients].length}\n\n", menuoptions)
         
         if input == "Add new client"
             client_hash = add_new_client(client_hash)
@@ -95,6 +97,7 @@ def clientsearch(client_hash)
             end
             if matches.length > 1 && matches.length < 7
                 puts "Multiple results:\n\n"
+
                 matches.each do |id|
                     puts "Client ID: #{client_hash[:clients][id-1][:id]} \t#{client_hash[:clients][id-1][:name]}\n"
                 end

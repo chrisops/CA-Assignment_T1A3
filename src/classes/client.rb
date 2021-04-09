@@ -4,7 +4,7 @@ require 'mailjet'
 require 'dotenv/load'
 require_relative '../methods/files'
 
-# Client object stores a hash of values that represent a client, and can be read from @profile
+# Client object stores a hash of values that represent a client, and can be read from Client.Dprofile
 
 class Client
 
@@ -56,7 +56,7 @@ class Client
         puts "Add new charge to #{@name} account ID: #{@id}\n\n\n"
 
         description = prompt.ask("Description:", default: "Work done on #{Debug::Date}") do |q|
-            q.validate(/^[-\/\\\d\w ]+$/)
+            q.validate(/^[\:\-\/\\\d\w ]+$/)
             q.messages[:valid?] = "Invalid Description, must be alphanumeric"
         end
         flatfee = prompt.ask("Flat fee:", default: 0) do |q|
@@ -100,6 +100,12 @@ class Client
 
     # sends new invoice with pending charges added to it
     def send_invoice()
+        if !File.exist?('.env')
+            puts "Mailjet API key not configured, please run setup.sh to setup email feature"
+            puts "\n\nPress Enter to continue"
+            input = gets
+            return false
+        end
         prompt = TTY::Prompt.new
         system('clear')
         puts "Invoice for #{@name}"
