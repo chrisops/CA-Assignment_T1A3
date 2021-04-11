@@ -48,7 +48,7 @@ class Client
 
     # adds new pending charge to client profile
     def add_charge()
-        prompt = TTY::Prompt.new
+        prompt = TTY::Prompt.new(symbols: {marker: ">"})
         system('clear')
         puts "Add new charge to #{@name} account ID: #{@id}\n\n\n"
 
@@ -77,7 +77,7 @@ class Client
 
     # prompts user for input and saves new client info
     def edit_client
-        prompt = TTY::Prompt.new
+        prompt = TTY::Prompt.new(symbols: {marker: ">"})
         system('clear')
         puts "Editing client #{@name} - ID #{@id}\n\n\n"
         @name = prompt.ask("Name:", default: @name) do |q|
@@ -103,7 +103,7 @@ class Client
         if @pendingcharges.length == 0
             return "No charges on account".colorize(:yellow)
         end
-        prompt = TTY::Prompt.new
+        prompt = TTY::Prompt.new(symbols: {marker: ">"})
         system('clear')
         puts "Invoice for #{@name}"
         puts "\nCharges on invoice:"

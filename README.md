@@ -137,6 +137,9 @@ Link to my [trello](https://trello.com/b/4dqxtBYP/bashbooks-ruby-app)
 
 1. **For invoice emailing to work** - Sign up for a Mailjet account and get an API key and API secret
 2. Run `bash setup.sh` from the `src` folder
+
+> Some systems will have an error installing unf_ext dependancy, if you get this error while installing, run `sudo apt-get install ruby-dev` then run `bash setup.sh` again to fix this bug
+
 3. Input API values in the setup prompt, and your email address
 4. Run main.rb
 

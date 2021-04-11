@@ -17,7 +17,7 @@ def loading_anim
 end
 
 def get_company_name
-    prompt = TTY::Prompt.new
+    prompt = TTY::Prompt.new(symbols: {marker: ">"})
     if File.exist?('settings.cfg')
         begin
             companyname = File.open('settings.cfg', &:readline)

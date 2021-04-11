@@ -6,7 +6,7 @@ require_relative 'files'
 
 # mainmenu(companyname,user,client_hash) Returns option selected by user
 def main_menu(companyname="Unknown",username="Unknown",client_hash)
-    prompt = TTY::Prompt.new
+    prompt = TTY::Prompt.new(symbols: {marker: ">"})
     input = ""
     while input != "Exit"
         system('clear')
@@ -28,7 +28,7 @@ end
 
 # add_new_client(client_hash) - prompts for new client information, adds to client_hash, then returns the updated hash. Also updates the clients.json file
 def add_new_client(client_hash)
-    prompt = TTY::Prompt.new
+    prompt = TTY::Prompt.new(symbols: {marker: ">"})
     totalclients = client_hash[:clients].length
     system('clear')
     Debug.show("Debug ON")
@@ -55,7 +55,7 @@ end
 
 # searches the client hash to match a string input from the user, then goes to clientselect menu
 def clientsearch(client_hash,username)
-    prompt = TTY::Prompt.new
+    prompt = TTY::Prompt.new(symbols: {marker: ">"})
     input = ""
     while input != "Exit"
         system('clear')
@@ -122,7 +122,7 @@ def clientsearch(client_hash,username)
 end
 
 def selectclient(client,username)
-    prompt = TTY::Prompt.new
+    prompt = TTY::Prompt.new(symbols: {marker: ">"})
     input = ""
     msg = ""
     selected = Client.new(client[:id],client[:name],client[:phone],client[:email],client[:pendingcharges])
@@ -148,7 +148,7 @@ end
 
 #prints all invoices matching client ID
 def view_invoices(id)
-    prompt = TTY::Prompt.new
+    prompt = TTY::Prompt.new(symbols: {marker: ">"})
     invoices = get_invoices()
     invoice_match = invoices[:invoices].filter {|invoice| invoice[:clientid] == id}
     if invoice_match.length == 0

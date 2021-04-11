@@ -16,7 +16,7 @@ end
 # loginprompt(logins_array) returns username if login matches array of credentials, false otherwise
 def login_prompt(loginaccounts)
     raise TypeError.new("Login credentials in login_prompt() must be an array") if !loginaccounts.is_a?(Array)
-    prompt = TTY::Prompt.new
+    prompt = TTY::Prompt.new(symbols: {marker: ">"})
     failedmsg = ""
     input = ""
     while input != "Exit"
