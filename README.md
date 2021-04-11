@@ -136,7 +136,7 @@ Link to my [trello](https://trello.com/b/4dqxtBYP/bashbooks-ruby-app)
 ## Installation Instructions
 
 1. **For invoice emailing to work** - Sign up for a Mailjet account and get an API key and API secret
-2. Run `setup.sh` from the `src` folder
+2. Run `bash setup.sh` from the `src` folder
 3. Input API values in the setup prompt, and your email address
 4. Run main.rb
 
