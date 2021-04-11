@@ -7,7 +7,6 @@ require_relative '../methods/files'
 # Client object stores a hash of values that represent a client, and can be read from Client.Dprofile
 
 class Client
-
     def initialize(id,name,phone,email,pendingcharges=[])
         @id = id
         @name = name
@@ -20,12 +19,12 @@ class Client
     # adds client to the client_hash clients: array and writes to clients.json, then returns updated hash
     def save()
         @client_hash[:clients][@id-1] = profile()
-        File.write("clients.json", JSON.dump(@client_hash))
-        return @client_hash
+        File.write('clients.json', JSON.dump(@client_hash))
+        @client_hash
     end
 
     def profile
-        return {
+        {
             id: @id,
             name: @name,
             phone: @phone,
@@ -37,15 +36,14 @@ class Client
     # prints client profile info in a nice format
     def profile_print
         puts "Client ID: \t#{@id}\nName: \t\t#{@name}\nPhone Number: \t#{@phone}\nEmail Address: \t#{@email}"
-        
-        charges = ""
+        charges = ''
         bigtotal = 0
         @pendingcharges.each do |charge|
             total = charge[:flatfee] + (charge[:hours] * charge[:chargeperhour])
             bigtotal += total
             charges.concat("   #{charge[:description]} - \t\t$#{total} \n\t$#{charge[:flatfee]} fee + #{charge[:hours].to_s} hours at $#{charge[:chargeperhour].to_s} per hour.\n\n")
         end
-        puts "\nPending charges:\t\t\t$#{bigtotal}"
+        puts "\nPending charges:\t\t\t$#{bigtotal}\n\n"
         puts charges
     end
 
@@ -101,10 +99,10 @@ class Client
     # sends new invoice with pending charges added to it
     def send_invoice()
         if !File.exist?('.env')
-            puts "Mailjet API key not configured, please run setup.sh to setup email feature"
-            puts "\n\nPress Enter to continue"
-            input = gets
-            return false
+            return "Mailjet API key not configured, please run setup.sh to setup email feature".colorize(:yellow)
+        end
+        if @pendingcharges.length == 0
+            return "No charges on account".colorize(:yellow)
         end
         prompt = TTY::Prompt.new
         system('clear')
@@ -132,7 +130,7 @@ class Client
                 end
                 variable = Mailjet::Send.create(messages: [{
                   'From'=> {
-                    'Email'=> 'billing@makecoolstuff.net',
+                    'Email'=> ENV['EMAIL'],
                     'Name'=> "#{companyname} Accounts Receivable"
                   },
                   'To'=> [
@@ -143,20 +141,25 @@ class Client
                   ],
                   'Subject'=> "#{companyname} - Invoice",
                   'TextPart'=> 'Company Invoice',
-                  'HTMLPart'=> "<h1>#{companyname}</h1><h2>Account ID: #{@id}</h2><h3>Dear #{@name},</h3<br /><h4>Please find below invoice:</h4><br /><h5 style='font-size:22px'><b>#{chargelist}</b></h5><br />Total due: <span style='font-weight:bold,margin-left:60px'>$#{maintotal}<br /><p style='color: darkgrey'>Invoice due within 14 days</p> ",
+                  'HTMLPart'=> "<h1>#{companyname}</h1><h2>Account ID: #{@id}</h2><h3>Dear #{@name},</h3<br /><h4>Please find below invoice:</h4><br /><h5 style='font-size:16px'><b>#{chargelist}</b></h5><br />Total due: <span style='font-weight:bold,margin-left:60px'>$#{maintotal}<br /><p style='color: darkgrey'>Invoice due within 14 days</p> ",
                   'CustomID' => 'InvoiceEmailBashBooksRubyApp'
                 }]
                 )
             rescue => error
-                puts "Failed to deliver email:"
-                puts error.message
-                puts "\nPress enter to continue"
-                input = gets
-                return false
+                return "Failed to deliver email: \n#{error.message}".colorize(:red)
             end
+            invoice_hash = {
+                date: Debug::DateT,
+                clientid: @id,
+                clientname: @name,
+                email: @email,
+                charges: @pendingcharges,
+                total: maintotal
+            }
+            saveinvoice(invoice_hash)
             @pendingcharges = []
             save()
-            return true
+            return "\nSuccessfully sent invoice to #{@email}\n\n".colorize(:green)
         end
     end
 end

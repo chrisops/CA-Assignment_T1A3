@@ -68,9 +68,13 @@ When a search returns a single client result, they will be **selected**, and the
 
 Upon opening the app, the user will see a prompt for a username and password and so they will know they need to type this in, for demonstration purposes the app will simply accept admin/admin and guest/guest for the write and read accounts respectively. This will use the `tty-prompt` method `mask` for the password to cover up the password in the terminal. There will be error handling in the login method to display an error if the username and password is wrong or if they have entered characters that aren't alphanumeric.
 
+![loginscreen](./docs/loginscreen.png)
+
 ## Main Menu
 
 The main menu will use a `tty-prompt` object `TTY::Prompt.new` with a `select` method to display a menu navigated with the arrow keys. The user will see three options **search client**, **add new client** and **quit**. The user will see the three options and can select one with the enter/return key. There will be error catching in case the `tty-prompt` gem returns an unexpected result.
+
+
 
 ## Search client
 
@@ -79,6 +83,8 @@ The search client menu will prompt the user to type in alphanumeric text to sear
 ## Selected client
 
 The selected client menu will display all the information on the client found with the search, and the user will then be prompted with `edit`, `add pending charge`, `send invoice`, `delete` or `exit`. The user can navigate this menu using the arrow keys and the enter/return key.
+
+![clientscreen](./docs/clientscreen.png)
 
 ## Edit client
 
@@ -117,3 +123,44 @@ Link to my [trello](https://trello.com/b/4dqxtBYP/bashbooks-ruby-app)
 > - steps to install the application
 > - any dependencies required by the application to operate
 > - any system/hardware requirements
+
+## System/Hardware requirements:
+
+- Requires Ruby version 2.7.x or later to be installed
+- Requires bundler to be installed [https://bundler.io/](https://bundler.io/)
+- at least 1 CPU and 1 RAM
+- Tested working on Windows 10 with WSL Ubuntu 18.04
+- Also working on Ubuntu 20.04
+- Does not work on Mac for some reason
+
+## Installation Instructions
+
+1. **For invoice emailing to work** - Sign up for a Mailjet account and get an API key and API secret
+2. Run `setup.sh` from the `src` folder
+3. Input API values in the setup prompt, and your email address
+4. Run main.rb
+
+## How to use
+
+1. Run `ruby main.rb` from the src folder (Use the flag "-d" or "--debug" for debug mode, use this for reporting bugs)
+2. Login with the credentials admin/admin for the main read/write privileges, or use guest/guest for read-only privileges
+3. Enter your company name
+4. From the main menu, begin creating customer accounts by selecting "Add new client" using the arrow keys and Enter/return to select.
+
+![menuscreen](./docs/menuscreen.png)
+
+5. After adding a client, you can now search for that client by selecting Search client in the main menu
+
+![testclientscreen](./docs/testclientscreen.png)
+
+6. With that client selected, you can add a pending charge to their account by selecting "Add pending charge"
+
+![chargeclientscreen](./docs/chargeclientscreen.png)
+
+7. With a charge on the account, you can now send invoices to that customer using "Send invoice"
+
+8. After the invoice is sent, you can always view the invoice that was sent by selecting "View invoices"
+
+![invoiceclientscreen](./docs/invoiceclientscreen.png)
+
+9. It's as simple as that! If you ever need to export your client list, it is all stored in the "clients.json" file in the src folder.
