@@ -1,5 +1,4 @@
 require 'tty-prompt'
-require 'mail'
 require 'mailjet'
 require 'dotenv/load'
 require_relative '../methods/files'
